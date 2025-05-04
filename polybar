@@ -1,0 +1,157 @@
+[colors]
+background = #ffeec3
+background-alt = #00000
+foreground = #4D4D4B
+primary = #000000
+secondary = #000000
+alert = #FF0000
+disabled = #4D4D4B
+
+[bar/i3]
+width = 100%
+height = 28pt
+radius = 3
+
+dpi = 96
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+line-size = 3pt
+
+border-size = 2pt
+border-color = #4D4D4B
+
+padding-left = 1
+padding-right = 1
+
+module-margin = 2
+
+separator = |
+separator-foreground = ${colors.foreground}
+
+font-0 = monospace;3
+
+modules-left = xworkspaces xwindow
+modules-right = i3 filesystem cpu memory pulseaudio brightness battery date tray
+
+cursor-click = pointer
+cursor-scroll = ns-resize
+
+enable-ipc = true
+
+; wm-restack = generic
+; wm-restack = bspwm
+wm-restack = i3
+
+; override-redirect = true
+[module/systray]
+type = internal/tray
+
+format-margin = 8pt
+tray-spacing = 16pt
+
+[module/xworkspaces]
+type = internal/xworkspaces
+
+label-active = %name%
+label-active-background = ${colors.background-alt}
+label-active-underline= ${colors.primary}
+label-active-padding = 1
+
+label-occupied = %name%
+label-occupied-padding = 1
+
+label-urgent = %name%
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 1
+
+label-empty = %name%
+label-empty-foreground = ${colors.disabled}
+label-empty-padding = 1
+
+[module/xwindow]
+type = internal/xwindow
+label = %title:0:60:...%
+
+[module/filesystem]
+type = custom/script
+exec = echo "%{F#000000}STRG%{F-} $(df -h / | awk 'NR==2 {print $5}')"
+interval = 25
+
+[module/pulseaudio]
+type = internal/pulseaudio
+
+format-volume-prefix = "VOL "
+format-volume-prefix-foreground = ${colors.primary}
+format-volume = <label-volume>
+
+label-volume = %percentage%%
+
+label-muted = muted
+label-muted-foreground = ${colors.disabled}
+
+[module/memory]
+type = internal/memory
+interval = 2
+format-prefix = "RAM "
+format-prefix-foreground = ${colors.primary}
+label = %percentage_used:2%%
+
+[module/battery]
+type = internal/battery
+battery = BAT1
+adapter = ACAD
+poll-interval = 5
+full-at = 99
+low-at = 15
+
+format-mounted = <label-mounted>
+
+label-charging = %{F#000000}Charging%{F-} %percentage%%
+label-discharging = %{F#000000}Discharging%{F-} %percentage%%
+label-full = %{F#000000}Fully charged%{F-}
+label-low = %{F#000000}BATTERY LOW%{F-}
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+format-prefix = "CPU "
+format-prefix-foreground = ${colors.primary}
+label = %percentage:2%%
+
+[network-base]
+type = internal/network
+interval = 5
+format-connected = <label-connected>
+format-disconnected = <label-disconnected>
+label-disconnected = %{F#F0C674}%ifname%%{F#707880} disconnected
+
+[module/wlan]
+inherit = network-base
+interface-type = wireless
+label-connected = %{F#4D4D4B}%ifname%%{F-} %essid% %local_ip%
+
+[module/date]
+type = internal/date
+interval = 1.0
+date = %Y-%m-%d | %H:%M:%S
+label = %date%
+label-font = 3
+label-foreground = ${colors.primary}
+
+
+[module/tray]
+type = internal/tray
+format-margin = 8px
+tray-spacing = 20px
+
+[settings]
+screenchange-reload = true
+pseudo-transparency = true
+
+[module/brightness]
+type = custom/script
+exec = brightnessctl get | awk -v max=$(brightnessctl max) '{printf "%d%%", ($1/max)*100}'
+interval = 0.1
+label =  %{F#000000}BRI%{F-} %output%
